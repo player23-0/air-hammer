@@ -9,7 +9,7 @@ Usage
 -----
 
  ```bash
-git clone
+git clone https://github.com/player23-0/air-hammer.git
 cd air-hammer
 python3 -m venv ~/myenv
 source ~/myenv/bin/activate
